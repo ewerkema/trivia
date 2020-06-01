@@ -139,11 +139,11 @@ class Game
                     . $this->purses[$this->currentPlayer]
                     . " Gold Coins.");
 
-                $winner = $this->didPlayerWin();
+                $notAWinner = !$this->didPlayerWin();
                 $this->currentPlayer++;
                 if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
 
-                return $winner;
+                return $notAWinner;
             } else {
                 $this->currentPlayer++;
                 if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
@@ -160,11 +160,11 @@ class Game
                 . $this->purses[$this->currentPlayer]
                 . " Gold Coins.");
 
-            $winner = $this->didPlayerWin();
+            $notAWinner = !$this->didPlayerWin();
             $this->currentPlayer++;
             if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
 
-            return $winner;
+            return $notAWinner;
         }
     }
 
@@ -182,7 +182,7 @@ class Game
 
     function didPlayerWin()
     {
-        return !($this->purses[$this->currentPlayer] == 6);
+        return $this->purses[$this->currentPlayer] == 6;
     }
 
     public static function echoln($string)
