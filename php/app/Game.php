@@ -74,31 +74,24 @@ class Game
                 $this->isGettingOutOfPenaltyBox = true;
 
                 self::echoln($this->players[$this->currentPlayer] . " is getting out of the penalty box");
-                $this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] + $roll;
-                if ($this->places[$this->currentPlayer] > 11) $this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] - 12;
-
-                self::echoln($this->players[$this->currentPlayer]
-                    . "'s new location is "
-                    . $this->places[$this->currentPlayer]);
-                self::echoln("The category is " . $this->currentCategory());
-                $this->askQuestion();
             } else {
                 self::echoln($this->players[$this->currentPlayer] . " is not getting out of the penalty box");
+
                 $this->isGettingOutOfPenaltyBox = false;
+
+                return;
             }
 
-        } else {
-
-            $this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] + $roll;
-            if ($this->places[$this->currentPlayer] > 11) $this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] - 12;
-
-            self::echoln($this->players[$this->currentPlayer]
-                . "'s new location is "
-                . $this->places[$this->currentPlayer]);
-            self::echoln("The category is " . $this->currentCategory());
-            $this->askQuestion();
         }
 
+        $this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] + $roll;
+        if ($this->places[$this->currentPlayer] > 11) $this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] - 12;
+
+        self::echoln($this->players[$this->currentPlayer]
+            . "'s new location is "
+            . $this->places[$this->currentPlayer]);
+        self::echoln("The category is " . $this->currentCategory());
+        $this->askQuestion();
     }
 
     function askQuestion()
@@ -130,42 +123,24 @@ class Game
 
     function wasCorrectlyAnswered()
     {
-        if ($this->inPenaltyBox[$this->currentPlayer]) {
-            if ($this->isGettingOutOfPenaltyBox) {
-                self::echoln("Answer was correct!!!!");
-                $this->purses[$this->currentPlayer]++;
-                self::echoln($this->players[$this->currentPlayer]
-                    . " now has "
-                    . $this->purses[$this->currentPlayer]
-                    . " Gold Coins.");
-
-                $notAWinner = !$this->didPlayerWin();
-                $this->currentPlayer++;
-                if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
-
-                return $notAWinner;
-            } else {
-                $this->currentPlayer++;
-                if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
-                return true;
-            }
-
-
-        } else {
-
-            self::echoln("Answer was corrent!!!!");
-            $this->purses[$this->currentPlayer]++;
-            self::echoln($this->players[$this->currentPlayer]
-                . " now has "
-                . $this->purses[$this->currentPlayer]
-                . " Gold Coins.");
-
-            $notAWinner = !$this->didPlayerWin();
+        if ($this->inPenaltyBox[$this->currentPlayer] && !$this->isGettingOutOfPenaltyBox) {
             $this->currentPlayer++;
             if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
-
-            return $notAWinner;
+            return true;
         }
+        
+        self::echoln("Answer was correct!!!!");
+        $this->purses[$this->currentPlayer]++;
+        self::echoln($this->players[$this->currentPlayer]
+            . " now has "
+            . $this->purses[$this->currentPlayer]
+            . " Gold Coins.");
+
+        $notAWinner = !$this->didPlayerWin();
+        $this->currentPlayer++;
+        if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
+
+        return $notAWinner;
     }
 
     function wrongAnswer()
