@@ -22,11 +22,11 @@ class GameInitializationTest extends TestCase
     {
         $this->game->add("John");
 
-        $this->assertEquals(1, $this->game->howManyPlayers());
+        $this->assertEquals(1, $this->game->totalPlayers());
 
         $this->game->add("Doe");
 
-        $this->assertEquals(2, $this->game->howManyPlayers());
+        $this->assertEquals(2, $this->game->totalPlayers());
     }
 
     /** @test */

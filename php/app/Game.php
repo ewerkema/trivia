@@ -12,7 +12,6 @@ class Game
     var $rockQuestions;
 
     var $current = 0;
-    var $isGettingOutOfPenaltyBox;
 
     function __construct()
     {
@@ -38,7 +37,7 @@ class Game
 
     function isPlayable()
     {
-        return ($this->howManyPlayers() >= 2);
+        return ($this->totalPlayers() >= 2);
     }
 
     function add($playerName)
@@ -47,11 +46,11 @@ class Game
         array_push($this->players, $player);
 
         self::echoln($playerName . " was added");
-        self::echoln("They are player number " . $this->howManyPlayers());
+        self::echoln("They are " . $this->totalPlayers() . " players");
         return true;
     }
 
-    function howManyPlayers()
+    function totalPlayers()
     {
         return count($this->players);
     }
@@ -67,11 +66,9 @@ class Game
             if ($roll % 2 != 0) {
                 self::echoln($player->name . " is getting out of the penalty box");
 
-                $this->isGettingOutOfPenaltyBox = true;
+                $player->removeFromPenaltyBox();
             } else {
                 self::echoln($player->name . " is not getting out of the penalty box");
-
-                $this->isGettingOutOfPenaltyBox = false;
 
                 return;
             }
@@ -126,7 +123,7 @@ class Game
     function wasCorrectlyAnswered()
     {
         $player = $this->currentPlayer();
-        if ($player->inPenaltyBox() && !$this->isGettingOutOfPenaltyBox) {
+        if ($player->inPenaltyBox()) {
             $this->nextPlayer();
             return true;
         }
@@ -157,7 +154,7 @@ class Game
 
     private function nextPlayer(): void
     {
-        $this->current = ($this->current + 1) % $this->howManyPlayers();
+        $this->current = ($this->current + 1) % $this->totalPlayers();
     }
 
     function didPlayerWin()
