@@ -160,6 +160,7 @@ class GameTurnTest extends TestCase
 
         $this->assertPlayerHasGoldCoins(self::PLAYER1, 1);
 
+        $this->sendPlayerOutsidePenaltyBox(self::PLAYER1);
         $this->setPlayersTurn(self::PLAYER1);
         $this->nextTurn(false, false);
 
