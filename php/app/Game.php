@@ -124,11 +124,10 @@ class Game
     function wasCorrectlyAnswered()
     {
         if ($this->inPenaltyBox[$this->currentPlayer] && !$this->isGettingOutOfPenaltyBox) {
-            $this->currentPlayer++;
-            if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
+            $this->nextPlayer();
             return true;
         }
-        
+
         self::echoln("Answer was correct!!!!");
         $this->purses[$this->currentPlayer]++;
         self::echoln($this->players[$this->currentPlayer]
@@ -137,8 +136,7 @@ class Game
             . " Gold Coins.");
 
         $notAWinner = !$this->didPlayerWin();
-        $this->currentPlayer++;
-        if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
+        $this->nextPlayer();
 
         return $notAWinner;
     }
@@ -149,11 +147,15 @@ class Game
         self::echoln($this->players[$this->currentPlayer] . " was sent to the penalty box");
         $this->inPenaltyBox[$this->currentPlayer] = true;
 
-        $this->currentPlayer++;
-        if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
+        $this->nextPlayer();
         return true;
     }
 
+    private function nextPlayer(): void
+    {
+        $this->currentPlayer++;
+        if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
+    }
 
     function didPlayerWin()
     {
