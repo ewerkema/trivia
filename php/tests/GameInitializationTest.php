@@ -2,9 +2,7 @@
 
 namespace Tests;
 
-include __DIR__.'/../Game.php';
-
-use Game;
+use App\Game;
 use PHPUnit\Framework\TestCase;
 
 /**
