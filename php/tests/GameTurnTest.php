@@ -3,6 +3,7 @@
 namespace Tests;
 
 use App\Game;
+use App\Player;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,7 +33,7 @@ class GameTurnTest extends TestCase
     /** @test */
     public function the_game_starts_with_first_added_player()
     {
-        $this->assertEquals(self::PLAYER1, $this->game->players[$this->game->currentPlayer]);
+        $this->assertEquals(self::PLAYER1, $this->game->currentPlayer()->name);
     }
 
     /** @test */
@@ -237,9 +238,9 @@ class GameTurnTest extends TestCase
 
     private function assertPlayerHasGoldCoins($playerName, $totalCoins)
     {
-        $index = array_search($playerName, $this->game->players);
+        $player = $this->findPlayerByName($playerName);
 
-        $this->assertEquals($totalCoins, $this->game->purses[$index]);
+        $this->assertEquals($totalCoins, $player->totalCoins());
     }
 
     private function assertCategoryOnPosition($playerName, $category, $position)
@@ -251,9 +252,9 @@ class GameTurnTest extends TestCase
 
     private function assertPlayersPositionIs($playerName, $position)
     {
-        $index = array_search($playerName, $this->game->players);
+        $player = $this->findPlayerByName($playerName);
 
-        $this->assertEquals($position, $this->game->places[$index]);
+        $this->assertEquals($position, $player->getPosition());
     }
 
     private function assertOutputContains($contents, $clear = true)
@@ -267,36 +268,66 @@ class GameTurnTest extends TestCase
 
     private function setPlayersTurn($playerName)
     {
-        $index = array_search($playerName, $this->game->players);
+        $index = $this->findPlayerIndexByName($playerName);
 
-        $this->game->currentPlayer = $index;
+        $this->game->current = $index;
     }
 
     private function setPlayersPosition($playerName, $position)
     {
-        $index = array_search($playerName, $this->game->players);
+        $player = $this->findPlayerByName($playerName);
 
-        $this->game->places[$index] = $position;
+        $player->setPosition($position);
     }
 
     private function setPlayersGoldCoins($playerName, $totalCoins)
     {
-        $index = array_search($playerName, $this->game->players);
+        $player = $this->findPlayerByName($playerName);
 
-        $this->game->purses[$index] = $totalCoins;
+        $player->setCoins($totalCoins);
     }
 
     private function sendPlayerToPenaltyBox($playerName)
     {
-        $index = array_search($playerName, $this->game->players);
+        $player = $this->findPlayerByName($playerName);
 
-        $this->game->inPenaltyBox[$index] = true;
+        $player->sendToPenaltyBox();
     }
 
     private function sendPlayerOutsidePenaltyBox($playerName)
     {
-        $index = array_search($playerName, $this->game->players);
+        $player = $this->findPlayerByName($playerName);
 
-        $this->game->inPenaltyBox[$index] = false;
+        $player->removeFromPenaltyBox();
+    }
+
+    /**
+     * @param $playerName
+     * @return Player|null
+     */
+    private function findPlayerByName($playerName)
+    {
+        foreach ($this->game->players as $player) {
+            if ($player->name == $playerName) {
+                return $player;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $playerName
+     * @return int|null
+     */
+    private function findPlayerIndexByName($playerName)
+    {
+        foreach ($this->game->players as $index => $player) {
+            if ($player->name == $playerName) {
+                return $index;
+            }
+        }
+
+        return null;
     }
 }
